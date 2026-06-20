@@ -42,27 +42,6 @@ export function HubShell({
     <div className="dashboard-container dashboard-home">
       <div className="dashboard-home-bg" aria-hidden="true" />
 
-      <header className="dashboard-header">
-        <div className="dashboard-header-brand" aria-hidden="true">
-          <Image
-            src="/logos/logo-winston-churchill.png"
-            alt=""
-            width={120}
-            height={90}
-            className="dashboard-header-logo dashboard-header-logo--churchill"
-            priority
-          />
-          <Image
-            src="/logos/logo-winston-educativo.png"
-            alt=""
-            width={120}
-            height={90}
-            className="dashboard-header-logo dashboard-header-logo--educativo"
-            priority
-          />
-        </div>
-      </header>
-
       <main className="dashboard-main">
         <div className="dashboard-main-stage">
           <aside className="dashboard-flank dashboard-flank--start">

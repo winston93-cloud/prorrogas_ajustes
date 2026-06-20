@@ -668,7 +668,9 @@ body {
 }
 
 .pr-row-actions {
-  display: flex;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
   gap: 8px;
 }
 
@@ -785,35 +787,26 @@ body {
   text-align: center;
 }
 
-.pr-col-action {
-  width: 56px;
+.pr-col-actions {
+  width: 1%;
+  white-space: nowrap;
   text-align: center;
+  padding-inline: 10px !important;
 }
 
-.pr-table-sticky-end,
-.pr-table-sticky-end-2 {
+.pr-table-sticky-actions {
   position: sticky;
+  right: 0;
   z-index: 2;
   background: rgba(10, 22, 42, 0.98);
+  box-shadow: -8px 0 20px rgba(0, 0, 0, 0.28);
 }
 
-.pr-table-sticky-end {
-  right: 0;
-  box-shadow: -6px 0 16px rgba(0, 0, 0, 0.25);
-}
-
-.pr-table-sticky-end-2 {
-  right: 56px;
-  box-shadow: -4px 0 12px rgba(0, 0, 0, 0.15);
-}
-
-.pr-table thead .pr-table-sticky-end,
-.pr-table thead .pr-table-sticky-end-2 {
+.pr-table thead .pr-table-sticky-actions {
   background: rgba(8, 18, 36, 0.98);
 }
 
-.pr-table tbody tr:hover .pr-table-sticky-end,
-.pr-table tbody tr:hover .pr-table-sticky-end-2 {
+.pr-table tbody tr:hover .pr-table-sticky-actions {
   background: rgba(12, 28, 52, 0.98);
 }
 

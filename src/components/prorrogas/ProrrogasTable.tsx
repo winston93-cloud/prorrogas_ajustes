@@ -162,10 +162,7 @@ export function ProrrogasTable({
                   <th>Prórroga 2</th>
                   <th>Prórroga 3</th>
                   <th className="pr-col-total">Total</th>
-                  <th className="pr-col-action pr-table-sticky-end">Agregar</th>
-                  {puedeCorregir ? (
-                    <th className="pr-col-action pr-table-sticky-end-2">Corregir</th>
-                  ) : null}
+                  <th className="pr-col-actions pr-table-sticky-actions">Acciones</th>
                 </tr>
               </thead>
               <tbody>
@@ -202,30 +199,14 @@ export function ProrrogasTable({
                       <td className="pr-col-total">
                         <span className="pr-count-badge">{row.conteo}</span>
                       </td>
-                      <td className="pr-col-action pr-table-sticky-end">
-                        <button
-                          type="button"
-                          className="pr-icon-btn pr-icon-btn--add"
-                          onClick={() => onAgregar(row)}
-                          title="Agregar prórroga"
-                          aria-label={`Agregar prórroga a ${row.nombre}`}
-                        >
-                          <Plus size={18} />
-                        </button>
+                      <td className="pr-col-actions pr-table-sticky-actions">
+                        <RowActions
+                          row={row}
+                          puedeCorregir={puedeCorregir}
+                          onAgregar={onAgregar}
+                          onCorregir={onCorregir}
+                        />
                       </td>
-                      {puedeCorregir ? (
-                        <td className="pr-col-action pr-table-sticky-end-2">
-                          <button
-                            type="button"
-                            className="pr-icon-btn pr-icon-btn--edit"
-                            onClick={() => onCorregir(row)}
-                            title="Corrección manual"
-                            aria-label={`Corregir prórroga de ${row.nombre}`}
-                          >
-                            <Pencil size={16} />
-                          </button>
-                        </td>
-                      ) : null}
                     </tr>
                   )
                 })}

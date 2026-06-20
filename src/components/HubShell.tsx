@@ -45,8 +45,11 @@ export function HubShell({
     <div className="dashboard-container dashboard-home">
       <div className="dashboard-home-bg" aria-hidden="true" />
 
-      <main className="dashboard-main">
-        <div className="dashboard-main-stage">
+      <main className={`dashboard-main${wide ? ' dashboard-main--wide' : ''}`}>
+        <div
+          className={`dashboard-main-stage${wide ? ' dashboard-main-stage--wide' : ''}`}
+        >
+          {!wide ? (
           <aside className="dashboard-flank dashboard-flank--start">
             <Image
               src="/logos/logo-winston-churchill.png"
@@ -58,6 +61,7 @@ export function HubShell({
             />
             <span className="dashboard-flank-label">Instituto Winston Churchill</span>
           </aside>
+          ) : null}
 
           <div className={`dashboard-main-center${wide ? ' dashboard-main-center--wide' : ''}`}>
             <div className="dashboard-mobile-logos" aria-hidden="true">
@@ -96,6 +100,7 @@ export function HubShell({
             {children}
           </div>
 
+          {!wide ? (
           <aside className="dashboard-flank dashboard-flank--end">
             <Image
               src="/logos/logo-winston-educativo.png"
@@ -107,6 +112,7 @@ export function HubShell({
             />
             <span className="dashboard-flank-label">Instituto Educativo Winston</span>
           </aside>
+          ) : null}
         </div>
       </main>
     </div>

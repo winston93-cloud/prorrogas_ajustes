@@ -1,19 +1,41 @@
 'use client'
 
-import { HubPlaceholder, HubShell } from '@/components/HubShell'
+import { Suspense } from 'react'
+import { HubShell } from '@/components/HubShell'
+import { ProrrogasModule } from '@/components/prorrogas/ProrrogasModule'
 
-export default function ProrrogasPage() {
+function ProrrogasContent() {
   return (
     <HubShell
       title="Prórrogas"
       subtitle="Gestión de prórrogas de pago escolar"
       backHref="/"
       backLabel="Prórrogas y Ajustes"
+      wide
     >
-      <HubPlaceholder
-        title="Módulo en construcción"
-        hint="Aquí irá la migración del sistema legacy de prórrogas (filtros por nivel, grado, concepto, registro y consulta)."
-      />
+      <ProrrogasModule />
     </HubShell>
+  )
+}
+
+export default function ProrrogasPage() {
+  return (
+    <Suspense
+      fallback={
+        <HubShell
+          title="Prórrogas"
+          subtitle="Cargando módulo…"
+          backHref="/"
+          backLabel="Prórrogas y Ajustes"
+          wide
+        >
+          <div className="pr-table-loading" style={{ textAlign: 'center', padding: 48 }}>
+            Cargando…
+          </div>
+        </HubShell>
+      }
+    >
+      <ProrrogasContent />
+    </Suspense>
   )
 }

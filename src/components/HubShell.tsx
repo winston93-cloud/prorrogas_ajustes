@@ -26,6 +26,8 @@ type HubShellProps = {
   subtitle: string
   backHref?: string
   backLabel?: string
+  /** Layout ancho para tablas (módulo prórrogas). */
+  wide?: boolean
   children: ReactNode
 }
 
@@ -34,6 +36,7 @@ export function HubShell({
   subtitle,
   backHref,
   backLabel = 'Volver',
+  wide = false,
   children,
 }: HubShellProps) {
   const router = useRouter()
@@ -56,7 +59,7 @@ export function HubShell({
             <span className="dashboard-flank-label">Instituto Winston Churchill</span>
           </aside>
 
-          <div className="dashboard-main-center">
+          <div className={`dashboard-main-center${wide ? ' dashboard-main-center--wide' : ''}`}>
             <div className="dashboard-mobile-logos" aria-hidden="true">
               <Image
                 src="/logos/logo-winston-churchill.png"

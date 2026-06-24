@@ -5,6 +5,14 @@ import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import type { ReactNode } from 'react'
 
+function navigateTo(href: string, router: ReturnType<typeof useRouter>) {
+  if (/^https?:\/\//i.test(href)) {
+    window.location.assign(href)
+    return
+  }
+  router.push(href)
+}
+
 export type HubAccent = 'rose' | 'amber' | 'sky' | 'emerald' | 'violet' | 'indigo'
 
 export type HubNavItem = {
@@ -88,7 +96,7 @@ export function HubShell({
                 <button
                   type="button"
                   className="hub-back-btn"
-                  onClick={() => router.push(backHref)}
+                  onClick={() => navigateTo(backHref, router)}
                 >
                   ← {backLabel}
                 </button>

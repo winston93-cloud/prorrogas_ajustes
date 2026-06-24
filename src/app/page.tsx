@@ -1,6 +1,7 @@
 'use client'
 
 import { HubNavGrid, HubShell, type HubNavItem } from '@/components/HubShell'
+import { urlServiciosAdminDashboard } from '@/lib/serviciosAdminConfig'
 
 const MODULOS: HubNavItem[] = [
   {
@@ -39,6 +40,8 @@ export default function HomePage() {
     <HubShell
       title="Prórrogas y Ajustes"
       subtitle="Selecciona un módulo para continuar"
+      backHref={urlServiciosAdminDashboard()}
+      backLabel="Servicios Administrativos"
     >
       <HubNavGrid items={MODULOS} />
     </HubShell>

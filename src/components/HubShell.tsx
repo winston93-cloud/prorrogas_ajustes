@@ -4,6 +4,7 @@ import Image from 'next/image'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import type { ReactNode } from 'react'
+import ThemeToggle from '@/components/ThemeToggle'
 
 function navigateTo(href: string, router: ReturnType<typeof useRouter>) {
   if (/^https?:\/\//i.test(href)) {
@@ -101,8 +102,13 @@ export function HubShell({
                   ← {backLabel}
                 </button>
               ) : null}
-              <h1 className="dashboard-title">{title}</h1>
-              <p className="dashboard-subtitle">{subtitle}</p>
+              <div className="hub-heading-top">
+                <div>
+                  <h1 className="dashboard-title">{title}</h1>
+                  <p className="dashboard-subtitle">{subtitle}</p>
+                </div>
+                <ThemeToggle />
+              </div>
             </div>
 
             {children}

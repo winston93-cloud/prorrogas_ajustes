@@ -68,11 +68,10 @@ export function ProrrogasFilters({
         <label className="pr-field">
           <span>Grupo</span>
           <select
-            value={grupo || ''}
+            value={String(grupo)}
             onChange={(e) => onGrupoChange(Number(e.target.value))}
             disabled={!grado || loading}
           >
-            <option value="">N/A</option>
             {GRUPOS.map((g) => (
               <option key={g.value} value={g.value}>
                 {g.label}

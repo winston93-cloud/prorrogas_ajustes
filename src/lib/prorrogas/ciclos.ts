@@ -1,32 +1,38 @@
-/** Ciclo escolar activo (corte 15-jul). */
-export function calcularCicloEscolar(fecha = new Date()): number {
-  const year = fecha.getFullYear()
-  const month = fecha.getMonth() + 1
-  const day = fecha.getDate()
-  const startYear = month > 7 || (month === 7 && day >= 15) ? year : year - 1
-  return startYear - 2003
-}
-
-/** Ciclo de inscripción (legacy calculateInscriptionCycle). */
-export function calcularCicloInscripcion(fecha = new Date()): number {
-  const month = fecha.getMonth() + 1
-  const day = fecha.getDate()
-  const yy = fecha.getFullYear() % 100
-  const antesCambio = month < 7 || (month === 7 && day < 10)
-  const cea = antesCambio ? yy - 4 : yy - 3
-  return antesCambio ? cea + 1 : cea
-}
+/** Ciclo escolar — alineado con servicios_admin / catálogo `es_actual`. */
 
 export function cicloALabel(ciclo: number): string {
   const inicio = ciclo + 2003
   return `${inicio}-${inicio + 1}`
 }
 
-/** Ciclos disponibles en modales (19–23 + dinámicos). */
-export function ciclosDisponibles(): { value: number; label: string }[] {
-  const actual = calcularCicloEscolar()
+/**
+ * Fallback por calendario (corte 25-jul), misma regla que legacy PHP
+ * `calculateSchoolCycle` en prorrogas/module/callback.php.
+ * Preferir siempre `resolverCicloEscolarTemporada()` (BD es_actual).
+ */
+export function calcularCicloEscolarPorCorte(fecha = new Date()): number {
+  const cmd = `${String(fecha.getMonth() + 1).padStart(2, '0')}-${String(fecha.getDate()).padStart(2, '0')}`
+  const y = fecha.getFullYear() % 100
+  return cmd < '07-25' ? y - 4 : y - 3
+}
+
+/** Ciclo de inscripción (cen) — legacy calculateInscriptionCycle, corte 07-25. */
+export function calcularCicloInscripcion(fecha = new Date()): number {
+  const cmd = `${String(fecha.getMonth() + 1).padStart(2, '0')}-${String(fecha.getDate()).padStart(2, '0')}`
+  const y = fecha.getFullYear() % 100
+  const cea = cmd < '07-25' ? y - 4 : y - 3
+  return cmd < '07-25' ? cea + 1 : cea
+}
+
+/** @deprecated Usar resolverCicloEscolarTemporada o calcularCicloEscolarPorCorte. */
+export function calcularCicloEscolar(fecha = new Date()): number {
+  return calcularCicloEscolarPorCorte(fecha)
+}
+
+export function ciclosDisponibles(cicloActual?: number): { value: number; label: string }[] {
+  const actual = cicloActual ?? calcularCicloEscolarPorCorte()
   const min = Math.min(19, actual - 2)
-  const max = Math.max(23, actual + 1)
+  const max = Math.max(actual + 1, actual)
   const list: { value: number; label: string }[] = []
   for (let c = min; c <= max; c++) {
     list.push({ value: c, label: cicloALabel(c) })

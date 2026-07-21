@@ -50,7 +50,7 @@ export function ProrrogasModule() {
   const cargar = useCallback(
     async (modoBusqueda: ModoBusqueda) => {
       if (!nivel || !grado) return
-      if (modoBusqueda !== 'inscripcion_pendiente' && !grupo) return
+      // grupo 0 = N/A (legacy): válido para activos e inscripción pendiente
 
       setLoading(true)
       setError(null)
@@ -79,7 +79,7 @@ export function ProrrogasModule() {
   )
 
   useEffect(() => {
-    if (grupo > 0 && nivel > 0 && grado > 0) {
+    if (nivel > 0 && grado > 0) {
       cargar('activos')
     }
   }, [grupo, nivel, grado, cargar])

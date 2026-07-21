@@ -2,7 +2,7 @@
 
 import { useEffect, useMemo, useState } from 'react'
 import { Check, X } from 'lucide-react'
-import { calcularCicloEscolar, ciclosDisponibles } from '@/lib/prorrogas/ciclos'
+import { ciclosDisponibles } from '@/lib/prorrogas/ciclos'
 import { conceptosParaModal } from '@/lib/prorrogas/conceptos'
 import type { AlumnoProrrogaRow } from '@/lib/prorrogas/types'
 
@@ -18,15 +18,25 @@ export function CorreccionModal({ alumno, operador, onClose, onSaved }: Props) {
   const [planText, setPlanText] = useState('')
   const [importe, setImporte] = useState('')
   const [concepto, setConcepto] = useState('')
-  const [ciclo, setCiclo] = useState(String(calcularCicloEscolar()))
+  const [ciclo, setCiclo] = useState('')
   const [fecha, setFecha] = useState('')
   const [saving, setSaving] = useState(false)
+  const [ciclosOpts, setCiclosOpts] = useState(() => ciclosDisponibles())
 
   const conceptos = useMemo(
     () => conceptosParaModal(planMes, 'correccion'),
     [planMes]
   )
-  const ciclos = useMemo(() => ciclosDisponibles(), [])
+
+  useEffect(() => {
+    fetch('/api/prorrogas/ciclo')
+      .then((r) => r.json())
+      .then((d) => {
+        if (d.cicloEscolar != null) setCiclo(String(d.cicloEscolar))
+        if (Array.isArray(d.ciclos) && d.ciclos.length) setCiclosOpts(d.ciclos)
+      })
+      .catch(() => {})
+  }, [])
 
   useEffect(() => {
     fetch(`/api/prorrogas/plan?alumno_id=${alumno.alumno_id}`)
@@ -138,7 +148,7 @@ export function CorreccionModal({ alumno, operador, onClose, onSaved }: Props) {
               <span>Ciclo escolar</span>
               <select value={ciclo} onChange={(e) => setCiclo(e.target.value)}>
                 <option value="">Seleccione</option>
-                {ciclos.map((c) => (
+                {ciclosOpts.map((c) => (
                   <option key={c.value} value={c.value}>
                     {c.label}
                   </option>

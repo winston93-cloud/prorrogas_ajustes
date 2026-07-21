@@ -3,14 +3,15 @@
 import { Suspense } from 'react'
 import { HubShell } from '@/components/HubShell'
 import { ProrrogasModule } from '@/components/prorrogas/ProrrogasModule'
+import { urlServiciosAdminDashboard } from '@/lib/serviciosAdminConfig'
 
 function ProrrogasContent() {
   return (
     <HubShell
       title="Prórrogas"
       subtitle="Gestión de prórrogas de pago escolar"
-      backHref="/"
-      backLabel="Prórrogas y Ajustes"
+      backHref={urlServiciosAdminDashboard()}
+      backLabel="Servicios Administrativos"
       wide
     >
       <ProrrogasModule />
@@ -25,8 +26,8 @@ export default function ProrrogasPage() {
         <HubShell
           title="Prórrogas"
           subtitle="Cargando módulo…"
-          backHref="/"
-          backLabel="Prórrogas y Ajustes"
+          backHref={urlServiciosAdminDashboard()}
+          backLabel="Servicios Administrativos"
           wide
         >
           <div className="pr-table-loading" style={{ textAlign: 'center', padding: 48 }}>

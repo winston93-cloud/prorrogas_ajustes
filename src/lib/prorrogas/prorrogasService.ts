@@ -1,9 +1,6 @@
 import { getInsforgeProrrogas } from '../insforgeProrrogas'
 import { getInsforgeServicios } from '../insforgeServicios'
-import {
-  calcularCicloEscolar,
-  calcularCicloInscripcion,
-} from './ciclos'
+import { resolverCicloEscolarTemporada, resolverCicloInscripcionTemporada } from './cicloTemporada'
 import { planDescripcion, planLabel } from './plan'
 import { calcularImporteProrroga } from './precio'
 import type {
@@ -38,17 +35,17 @@ function nombreCompleto(a: AlumnoDb): string {
     .trim()
 }
 
-function filtroCicloProrroga(
+async function filtroCicloProrroga(
   modo: ModoBusqueda,
   cicloActual: number
-): (p: ProrrogaDb) => boolean {
+): Promise<(p: ProrrogaDb) => boolean> {
   const cicloSig = cicloActual + 1
-  const cicloInsc = calcularCicloInscripcion()
+  const cicloInsc = await resolverCicloInscripcionTemporada()
   if (modo === 'inscripcion_pendiente') {
     const set = new Set([cicloActual, cicloSig, cicloInsc])
-    return (p) => set.has(p.prorroga_ciclo_escolar)
+    return (p) => set.has(Number(p.prorroga_ciclo_escolar))
   }
-  return (p) => p.prorroga_ciclo_escolar === cicloActual
+  return (p) => Number(p.prorroga_ciclo_escolar) === cicloActual
 }
 
 export async function buscarAlumnosProrrogas(params: {
@@ -59,7 +56,7 @@ export async function buscarAlumnosProrrogas(params: {
 }): Promise<AlumnoProrrogaRow[]> {
   const servicios = getInsforgeServicios()
   const prorrogasDb = getInsforgeProrrogas()
-  const cicloActual = calcularCicloEscolar()
+  const cicloActual = await resolverCicloEscolarTemporada()
 
   let query = servicios
     .from('alumno')
@@ -71,12 +68,18 @@ export async function buscarAlumnosProrrogas(params: {
 
   if (params.modo === 'inscripcion_pendiente') {
     query = query.eq('alumno_status', 2)
+    // grupo 0 = N/A (todos los grupos), igual que legacy
     if (params.grupo > 0) query = query.eq('alumno_grupo', params.grupo)
   } else {
     query = query
-      .eq('alumno_grupo', params.grupo)
       .eq('alumno_ciclo_escolar', cicloActual)
       .eq('alumno_status', 1)
+    if (params.grupo > 0) {
+      query = query.eq('alumno_grupo', params.grupo)
+    } else {
+      // N/A: incluir grupo 0 y sin asignar
+      query = query.eq('alumno_grupo', 0)
+    }
   }
 
   const { data: alumnos, error } = await query.order('alumno_app', {
@@ -97,12 +100,12 @@ export async function buscarAlumnosProrrogas(params: {
 
   if (errPr) throw new Error(errPr.message)
 
-  const cicloFilter = filtroCicloProrroga(params.modo, cicloActual)
+  const cicloFilter = await filtroCicloProrroga(params.modo, cicloActual)
   const porAlumno = new Map<number, ProrrogaDb[]>()
 
   for (const row of prorrogasRaw ?? []) {
     const p = row as ProrrogaDb & { alumno_id: number }
-    if (p.correccion === 1) continue
+    if (Number(p.correccion) === 1) continue
     if (!cicloFilter(p)) continue
     const list = porAlumno.get(p.alumno_id) ?? []
     list.push(p)
@@ -114,7 +117,7 @@ export async function buscarAlumnosProrrogas(params: {
   for (const raw of alumnos as AlumnoDb[]) {
     const list = porAlumno.get(raw.alumno_id) ?? []
     const fechas = list.map((p) =>
-      String(p.prorroga_registro).slice(0, 10)
+      String(p.prorroga_registro ?? '').slice(0, 10) || '—'
     )
     const autores = list.map((p) => p.autor?.trim() || '—')
 

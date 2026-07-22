@@ -35,7 +35,11 @@ export function ProrrogasModule() {
     useState<AlumnoProrrogaRow | null>(null)
 
   useEffect(() => {
-    const fromUrl = (searchParams.get('operador') ?? '').trim()
+    const fromUrl = (
+      searchParams.get('usuario') ??
+      searchParams.get('operador') ??
+      ''
+    ).trim()
     if (fromUrl) {
       setOperador(fromUrl)
       sessionStorage.setItem(STORAGE_KEY, fromUrl)
@@ -112,7 +116,7 @@ export function ProrrogasModule() {
   if (!operadorListo) {
     return (
       <div className="pr-alert pr-alert--warn">
-        <strong>Cargando operador…</strong>
+        <strong>Cargando usuario…</strong>
       </div>
     )
   }
@@ -120,11 +124,11 @@ export function ProrrogasModule() {
   if (!operador) {
     return (
       <div className="pr-alert pr-alert--warn">
-        <strong>Falta identificar operador</strong>
+        <strong>Falta identificar usuario</strong>
         <p>
           Entra a Prórrogas desde el <strong>dashboard principal</strong> (con tu
           usuario de sesión) para registrar el autor correctamente. No se usa un
-          operador por defecto.
+          usuario por defecto.
         </p>
       </div>
     )
@@ -135,7 +139,7 @@ export function ProrrogasModule() {
       <div className="pr-alert pr-alert--warn">
         <strong>Sin permiso</strong>
         <p>
-          El operador «{operador}» no tiene acceso al módulo de prórrogas. Si
+          El usuario «{operador}» no tiene acceso al módulo de prórrogas. Si
           entraste desde el dashboard y crees que deberías tener acceso, avisa a
           sistemas.
         </p>
@@ -146,7 +150,7 @@ export function ProrrogasModule() {
   return (
     <div className="pr-module">
       <div className="pr-operador-bar">
-        <span className="pr-operador-label">Operador</span>
+        <span className="pr-operador-label">Usuario</span>
         <span className="pr-operador-name">{operador}</span>
         {permisos.puedeCorregir ? (
           <span className="pr-operador-badge">Admin · correcciones</span>

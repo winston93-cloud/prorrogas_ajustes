@@ -13,7 +13,8 @@ const STORAGE_KEY = 'prorrogas_operador'
 
 export function ProrrogasModule() {
   const searchParams = useSearchParams()
-  const [operador, setOperador] = useState('mario')
+  const [operador, setOperador] = useState('')
+  const [operadorListo, setOperadorListo] = useState(false)
   const permisos = permisosPorOperador(operador)
 
   const [nivel, setNivel] = useState(0)
@@ -34,12 +35,22 @@ export function ProrrogasModule() {
     useState<AlumnoProrrogaRow | null>(null)
 
   useEffect(() => {
-    const fromUrl = searchParams.get('operador')
+    const fromUrl = (searchParams.get('operador') ?? '').trim()
+    if (fromUrl) {
+      setOperador(fromUrl)
+      sessionStorage.setItem(STORAGE_KEY, fromUrl)
+      setOperadorListo(true)
+      return
+    }
     const stored =
-      typeof window !== 'undefined' ? sessionStorage.getItem(STORAGE_KEY) : null
-    const initial = fromUrl || stored || 'mario'
-    setOperador(initial)
-    sessionStorage.setItem(STORAGE_KEY, initial)
+      typeof window !== 'undefined' ? sessionStorage.getItem(STORAGE_KEY)?.trim() : ''
+    if (stored) {
+      setOperador(stored)
+      setOperadorListo(true)
+      return
+    }
+    setOperador('')
+    setOperadorListo(true)
   }, [searchParams])
 
   const tituloTabla =
@@ -98,13 +109,35 @@ export function ProrrogasModule() {
     }
   }
 
+  if (!operadorListo) {
+    return (
+      <div className="pr-alert pr-alert--warn">
+        <strong>Cargando operador…</strong>
+      </div>
+    )
+  }
+
+  if (!operador) {
+    return (
+      <div className="pr-alert pr-alert--warn">
+        <strong>Falta identificar operador</strong>
+        <p>
+          Entra a Prórrogas desde el <strong>dashboard principal</strong> (con tu
+          usuario de sesión) para registrar el autor correctamente. No se usa un
+          operador por defecto.
+        </p>
+      </div>
+    )
+  }
+
   if (permisos.sinAcceso) {
     return (
       <div className="pr-alert pr-alert--warn">
         <strong>Sin permiso</strong>
         <p>
-          El operador «{operador}» no tiene acceso al módulo de prórrogas. Usa{' '}
-          <code>?operador=mario</code> en la URL para pruebas.
+          El operador «{operador}» no tiene acceso al módulo de prórrogas. Si
+          entraste desde el dashboard y crees que deberías tener acceso, avisa a
+          sistemas.
         </p>
       </div>
     )

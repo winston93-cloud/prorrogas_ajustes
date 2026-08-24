@@ -1,6 +1,6 @@
 import { NIVELES_TODOS, type NivelOption } from './niveles'
 
-const ADMINS = new Set(['alan', 'mario', 'carlos', 'emmanuel', 'rafa', 'ruben'])
+const ADMINS = new Set(['alan', 'mario', 'carlos', 'emmanuel', 'ruben'])
 const MATERNAL_KINDER = new Set(['coordkin', 'fatima'])
 const PRIMARIA = new Set(['coordprim', 'controlprim'])
 const SECUNDARIA = new Set(['coordsec', 'controlsec', 'josefina'])
